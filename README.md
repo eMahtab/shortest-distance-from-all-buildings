@@ -21,10 +21,11 @@ The distance is calculated using Manhattan Distance, where distance(p1, p2) = |p
 Input: grid = [[1,0,2,0,1],[0,0,0,0,0],[0,0,1,0,0]]
 Output: 7
 Explanation: Given three buildings at (0,0), (0,4), (2,2), and an obstacle at (0,2).
-The point (1,2) is an ideal empty land to build a house, as the total travel distance of 3+3+1=7 is minimal. So return 7.
+The point (1,2) is an ideal empty land to build a house, as the total travel distance of 3+3+1=7 is minimal. 
+So return 7.
 ```
 
-# Implementation :
+# Implementation : Time Limit exceeded
 ```java
 class Solution {
     public int shortestDistance(int[][] grid) {
