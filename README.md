@@ -25,6 +25,9 @@ The point (1,2) is an ideal empty land to build a house, as the total travel dis
 So return 7.
 ```
 
+### Example 2 :
+Input : [[1,1,0]] , return -1
+
 ## Naive approach : Works but runs out of time 
 Store the locations of all the buildings, and do BFS from the `zero` cells to each of the building to get the total distance.
 And return the global minimum distance. 
