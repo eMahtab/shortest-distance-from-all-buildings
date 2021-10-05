@@ -25,6 +25,13 @@ The point (1,2) is an ideal empty land to build a house, as the total travel dis
 So return 7.
 ```
 
+## Naive approach : Works but runs out of time 
+Store the locations of all the buildings, and do BFS from the `zero` cells to each of the building to get the total distance.
+And return the global minimum distance. 
+This approach works but the issue is, if we have a very large input matrix with lots of`zeroes` then its going to take a lot of time, 
+since we are doing **BFS from each `zero` cell to each of the building**.
+
+
 # Implementation : Time Limit exceeded
 ```java
 class Solution {
