@@ -109,3 +109,87 @@ class Solution {
     }
 }
 ```
+
+
+# Implementation 3 : Passed Time Limit
+```java
+class Solution {
+    public int shortestDistance(int[][] grid) {
+        if(grid == null || grid.length == 0)
+            return 0;
+        
+        int rows = grid.length;
+        int cols = grid[0].length;
+        List<int[]> buildings = new ArrayList<>();
+        int totalBuildings = 0;
+        for(int i = 0; i < rows; i++) {
+            for(int j = 0; j < cols; j++) {
+                if(grid[i][j] == 1)
+                    totalBuildings++;
+            }
+        }
+        int minDistance = Integer.MAX_VALUE;
+        
+        for(int i = 0; i < rows ; i++) {
+            for(int j = 0; j < cols; j++) {
+                if(grid[i][j] == 0) {
+                    int distance = bfs(grid, i, j, totalBuildings);
+                    minDistance = Math.min(minDistance , distance);
+                }
+            }
+        }
+        
+       return minDistance == Integer.MAX_VALUE ? -1 : minDistance; 
+    }
+    
+    private int bfs(int[][] grid, int sx, int sy, int totalBuildings) {
+        boolean[][] visited = new boolean[grid.length][grid[0].length];
+        Queue<int[]> q = new ArrayDeque<>();
+        q.add(new int[]{sx, sy});
+        visited[sx][sy] = true;
+        int distance = 1;
+        int[][] moves = {{0, 1} , {0, -1} , {-1, 0} , {1, 0}};
+        int housesReached = 0;
+        int totalDistance = 0;
+        while(!q.isEmpty() && housesReached < totalBuildings) {
+            int size = q.size();
+            for(int i = 0; i < size; i++) {
+                int[] pos = q.remove();
+                for(int[] move : moves) {
+                    int x = pos[0] + move[0];
+                    int y = pos[1] + move[1];
+                    if(x >= 0 &&  x < grid.length && y >= 0 && y < grid[0].length && !visited[x][y]) {
+                        if(grid[x][y] == 1) {
+                            visited[x][y] = true;
+                            housesReached++;
+                            totalDistance += distance;
+                            continue;
+                        }
+                        if(grid[x][y] == 0) {
+                            q.add(new int[]{x , y});
+                            visited[x][y] = true;
+                        }
+                            
+                    }
+                }
+            }
+            distance++;
+        }
+        // if we were not able to reach all the buildings
+        // optimization : we will not be able to reach all the buildings from any other empty land which was
+        // visited during our BFS search.
+        if(housesReached != totalBuildings) {
+            totalDistance = Integer.MAX_VALUE;
+            for(int i = 0; i < grid.length; i++) {
+                for(int j = 0; j < grid[0].length; j++) {
+                    if(visited[i][j] && grid[i][j] == 0)
+                        grid[i][j] = 2; // any value othet than 0 and 1
+                }
+            }
+        }
+        return totalDistance;
+    }
+}
+
+
+```
