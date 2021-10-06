@@ -35,7 +35,7 @@ This approach works but the issue is, if we have a very large input matrix with 
 since we are doing **BFS from each `zero` cell to each of the building**.
 
 
-# Implementation : Time Limit exceeded
+# Implementation 1 : Time Limit exceeded
 ```java
 class Solution {
     public int shortestDistance(int[][] grid) {
@@ -92,7 +92,7 @@ class Solution {
                 for(int[] move : moves) {
                     int x = pos[0] + move[0];
                     int y = pos[1] + move[1];
-                    if( x >= 0 &&  x < grid.length && y >= 0 && y < grid[0].length) {
+                    if(x >= 0 &&  x < grid.length && y >= 0 && y < grid[0].length) {
                         if(x == dx && y == dy)
                             return distance;
                         if(!visited.contains(x+","+y) && grid[x][y] == 0) {
@@ -109,6 +109,93 @@ class Solution {
     }
 }
 ```
+# Implementation 2 : Time Limit Exceeded
+```java
+class Solution {
+    public int shortestDistance(int[][] grid) {
+        if(grid == null || grid.length == 0)
+            return 0;
+        
+        int rows = grid.length;
+        int cols = grid[0].length;
+        List<int[]> buildings = new ArrayList<>();
+        for(int i = 0; i < rows; i++) {
+            for(int j = 0; j < cols; j++) {
+                if(grid[i][j] == 1)
+                    buildings.add(new int[]{i, j});
+            }
+        }
+        int minDistance = Integer.MAX_VALUE;
+        boolean solutionPossible = false;
+        
+        for(int i = 0; i < rows ; i++) {
+            for(int j = 0; j < cols; j++) {
+                if(grid[i][j] == 0) {
+                    int distance = 0;
+                    boolean canReach = true;
+                    for(int[] building: buildings) {
+                        int d = getDistance(grid, i, j, building[0], building[1]);
+                        if(d == -1) {
+                            canReach = false;
+                            break;
+                        }
+                        distance += d;
+                    }
+                    if(canReach) {
+                        minDistance = Math.min(minDistance, distance);
+                        solutionPossible = true;
+                    }
+                }
+            }
+        }
+        
+       return solutionPossible ? minDistance : -1; 
+    }
+    
+    private int getDistance(int[][] grid, int sx, int sy, int dx, int dy) {
+        Set<String> visited = new HashSet<>();
+        Queue<int[]> q = new ArrayDeque<>();
+        q.add(new int[]{sx, sy});
+        visited.add(sx + "," + sy);
+        int distance = 1;
+        int[][] moves = {{0, 1} , {0, -1} , {-1, 0} , {1, 0}};
+        while(!q.isEmpty()) {
+            int size = q.size();
+            for(int i = 0; i < size; i++) {
+                int[] pos = q.remove();
+                for(int[] move : moves) {
+                    int x = pos[0] + move[0];
+                    int y = pos[1] + move[1];
+                    if(x >= 0 &&  x < grid.length && y >= 0 && y < grid[0].length) {
+                        if(x == dx && y == dy)
+                            return distance;
+                        if(!visited.contains(x+","+y) && grid[x][y] == 0) {
+                            q.add(new int[]{x , y});
+                            visited.add(x + "," + y);
+                        }
+                            
+                    }
+                }
+            }
+            distance++;
+        }
+        // if we were not able to reach the building at position (dx,dy)
+        // optimization : we will not be able to reach (dx,dy) from any other empty land which was
+        // visited during our BFS search.
+        for(String point : visited) {
+            String[] cord = point.split(",");
+            int x = Integer.parseInt(cord[0]);
+            int y = Integer.parseInt(cord[1]);
+            if(grid[x][y] == 0)
+                grid[x][y] = 2; // any value other than 0 and 1
+        }
+        return -1;
+    }
+}
+
+
+```
+
 
 
 # Implementation 3 : Passed Time Limit
@@ -183,7 +270,7 @@ class Solution {
             for(int i = 0; i < grid.length; i++) {
                 for(int j = 0; j < grid[0].length; j++) {
                     if(visited[i][j] && grid[i][j] == 0)
-                        grid[i][j] = 2; // any value othet than 0 and 1
+                        grid[i][j] = 2; // any value other than 0 and 1
                 }
             }
         }
